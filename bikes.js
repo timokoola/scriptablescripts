@@ -6,7 +6,7 @@
 // Digitransit GraphQL API has a nice sandbox at
 // https://api.digitransit.fi/graphiql/hsl
 // and excellent documentation at
-//
+// https://digitransit.fi/en/developers/apis/
 // The query below gets two bike stops closest to my home
 
 let bikeQuery = JSON.stringify({
