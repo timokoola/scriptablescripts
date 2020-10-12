@@ -48,7 +48,7 @@ async function createWidget(bikeStops) {
   // Add background gradient
   let gradient = new LinearGradient();
   gradient.locations = [0, 1];
-  gradient.colors = [new Color("228844"), new Color("028822")];
+  gradient.colors = [new Color("228844"), new Color("021102")];
   widget.backgroundGradient = gradient;
   // Show app icon and title
   let titleStack = widget.addStack();
