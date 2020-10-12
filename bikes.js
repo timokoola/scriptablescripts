@@ -1,6 +1,6 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: green; icon-glyph: book;
+// icon-color: green; icon-glyph: bicycle;
 
 // Our GraphQL Query
 // Digitransit GraphQL API has a nice sandbox at
