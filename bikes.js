@@ -57,7 +57,6 @@ async function createWidget(bikeStops) {
   titleElement.font = Font.mediumSystemFont(13);
   widget.addSpacer(12);
   // Show Bikes
-  console.log(janneTie);
   let nameElement = widget.addText(`${janneTie.name} ${janneTie.bikesAvailable}`);
   nameElement.textColor = Color.white();
   nameElement.font = Font.systemFont(18);
