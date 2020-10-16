@@ -62,6 +62,11 @@ async function createWidget(bikeStops) {
   df.useNoDateStyle();
   df.useShortTimeStyle();
 
+  let rdf = new RelativeDateTimeFormatter();
+  rdf.useNamedDateTimeStyle();
+
+  let now = new Date();
+
   for (
     let i = 0;
     i < currentStop.stoptimesWithoutPatterns.length && i < 4;
@@ -86,12 +91,11 @@ async function createWidget(bikeStops) {
 
     departureStack.addSpacer();
 
-    let timeElement = departureStack.addText(`${df.string(itemDate)}`);
+    let timeElement = departureStack.addText(`${rdf.string(itemDate, now)}`);
     timeElement.font = Font.systemFont(13);
     timeElement.textColor = Color.white();
   }
 
-  
   // UI presented in Siri ans Shortcuta is non-interactive, so we only show the footer when not running the script from Siri.
   if (!config.runsWithSiri) {
     widget.addSpacer(8);
