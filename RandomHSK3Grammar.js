@@ -22,7 +22,8 @@ async function createWidget(gp) {
   // Add background gradient
   let gradient = new LinearGradient();
   gradient.locations = [0, 1];
-  gradient.colors = [new Color("df2407"), new Color("200301")];
+  gradient.colors = [new Color("200301"), new Color("df2407")];
+//   gradient.colors = [new Color("df2407"), new Color("200301")];
   widget.backgroundGradient = gradient;
   // Show app icon and title
   let titleStack = widget.addStack();
@@ -41,7 +42,7 @@ async function createWidget(gp) {
   descriptionElement.font = Font.systemFont(18);
   // UI presented in Siri ans Shortcuta is non-interactive, so we only show the footer when not running the script from Siri.
   if (!config.runsWithSiri) {
-    widget.addSpacer(8);
+    widget.addSpacer();
     // Add button to open documentation
     let linkSymbol = SFSymbol.named("arrow.up.forward");
     let footerStack = widget.addStack();
@@ -50,11 +51,11 @@ async function createWidget(gp) {
     linkStack.url = gp.link;
     let linkElement = linkStack.addText("Chinese Grammar Wiki");
     linkElement.font = Font.mediumSystemFont(13);
-    linkElement.textColor = Color.blue();
+    linkElement.textColor = yellow;
     linkStack.addSpacer(3);
     let linkSymbolElement = linkStack.addImage(linkSymbol.image);
     linkSymbolElement.imageSize = new Size(11, 11);
-    linkSymbolElement.tintColor = Color.blue();
+    linkSymbolElement.tintColor = yellow;
     footerStack.addSpacer();
     // Add link to documentation
     let docsSymbol = SFSymbol.named("book");

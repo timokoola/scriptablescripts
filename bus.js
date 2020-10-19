@@ -1,9 +1,15 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: cyan; icon-glyph: bus;
+let defaultStop = "HSL:1020601";
+let argsStop = args.widgetParameter;
+let userStop =
+  argsStop && typeof argsStop == "string" && argsStop.startsWith("HSL:")
+    ? argsStop
+    : defaultStop;
+
 let busStopQuery = JSON.stringify({
-  query:
-    '{  home: stop(id: "HSL:1463181") { gtfsId name url code stoptimesWithoutPatterns(numberOfDepartures: 10) { scheduledDeparture realtimeDeparture departureDelay realtime realtimeState serviceDay headsign trip { routeShortName tripHeadsign directionId route { type } } }  } office: stop(id: "HSL:2321222") { gtfsId name url code stoptimesWithoutPatterns(numberOfDepartures: 10) { scheduledDeparture realtimeDeparture departureDelay realtime realtimeState serviceDay headsign trip { routeShortName tripHeadsign directionId route { type } } }  }  }',
+  query: `{ stop(id: "${userStop}") { gtfsId name url code stoptimesWithoutPatterns(numberOfDepartures: 15) { scheduledDeparture realtimeDeparture departureDelay realtime realtimeState serviceDay headsign trip { routeShortName tripHeadsign directionId route { type } } } } }`,
 });
 
 let items = await getDigiTransit(busStopQuery);
@@ -30,18 +36,10 @@ async function getDigiTransit(query) {
   return await r.loadJSON();
 }
 
-function atHomeTime() {
-  let now = new Date();
-  let hours = now.getHours();
-  return hours < 10 || hours >= 18;
-}
-
 // modeled after the example
-async function createWidget(bikeStops) {
-  let home = bikeStops.data.home;
-  let office = bikeStops.data.office;
-
-  let currentStop = atHomeTime() ? home : office;
+async function createWidget(stops) {
+  let currentStop = stops.data.stop;
+  // API seems to return a bad url for stop time tables
   let linkUrl = `https://reittiopas.hsl.fi/pysakit/${currentStop.gtfsId}`;
 
   let title = `${currentStop.code} ${currentStop.name}`;
@@ -67,9 +65,11 @@ async function createWidget(bikeStops) {
 
   let now = new Date();
 
+  let rows = config.widgetFamily === "large" ? 15 : 4;
+
   for (
     let i = 0;
-    i < currentStop.stoptimesWithoutPatterns.length && i < 4;
+    i < currentStop.stoptimesWithoutPatterns.length && i < rows;
     i++
   ) {
     let item = currentStop.stoptimesWithoutPatterns[i];
@@ -80,21 +80,40 @@ async function createWidget(bikeStops) {
     let departureStack = widget.addStack();
     departureStack.url = linkUrl;
 
-    let routeElement = departureStack.addText(`${item.trip.routeShortName}`);
+    let shortName = `${item.trip.routeShortName}`;
+    let routeElement = departureStack.addText(shortName.padEnd(6, " "));
     routeElement.font = Font.systemFont(13);
     routeElement.textColor = Color.white();
-    departureStack.addSpacer(3);
 
-    let headSignElement = departureStack.addText(`${item.trip.tripHeadsign}`);
-    headSignElement.font = Font.systemFont(13);
-    headSignElement.textColor = Color.white();
+    if (config.widgetFamily !== "small") {
+      departureStack.addSpacer(3);
+      let headSignElement = departureStack.addText(`${item.trip.tripHeadsign}`);
+      headSignElement.font = Font.systemFont(13);
+      headSignElement.textColor = Color.white();
+    } else {
+      departureStack.addSpacer(3);
+      let headSignElement = departureStack.addText(
+        `${item.trip.tripHeadsign.substring(0, 5)}`
+      );
+      headSignElement.font = Font.systemFont(13);
+      headSignElement.textColor = Color.white();
+    }
 
     departureStack.addSpacer();
-
-    let timeElement = departureStack.addText(`${rdf.string(itemDate, now)}`);
-    timeElement.font = Font.systemFont(13);
-    timeElement.textColor = Color.white();
+    let departureDiff = Math.floor((itemDate - now) / 1000 / 60);
+    log(departureDiff);
+    if (config.widgetFamily !== "small") {
+      let timeElement = departureStack.addText(`${rdf.string(itemDate, now)}`);
+      timeElement.font = Font.systemFont(13);
+      timeElement.textColor = Color.white();
+    } else {
+      let timeElement = departureStack.addText(`${departureDiff}m`);
+      timeElement.font = Font.systemFont(13);
+      timeElement.textColor = Color.white();
+    }
   }
+
+  widget.addSpacer(20);
 
   // UI presented in Siri ans Shortcuta is non-interactive, so we only show the footer when not running the script from Siri.
   if (!config.runsWithSiri) {
