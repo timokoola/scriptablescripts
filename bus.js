@@ -115,12 +115,13 @@ async function createWidget(stops) {
     linkStack.centerAlignContent();
     linkStack.url = linkUrl;
     let linkElement = linkStack.addText("See all departures");
-    linkElement.font = new Font("Menlo", 13);
+    linkElement.font = Font.systemFont(13);
     linkElement.textColor = Color.white();
     linkStack.addSpacer(3);
     let linkSymbolElement = linkStack.addImage(linkSymbol.image);
     linkSymbolElement.imageSize = new Size(11, 11);
-    linkSymbolElement.tintColor = Color.blue();
+    linkSymbolElement.tintColor = Color.white();
+    linkSymbolElement.imageOpacity = 0.6;
     footerStack.addSpacer();
     // Add link to Find bikes now
     let docsSymbol = SFSymbol.named("bus");
