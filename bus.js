@@ -60,11 +60,6 @@ async function createWidget(stops) {
   df.useNoDateStyle();
   df.useShortTimeStyle();
 
-  let rdf = new RelativeDateTimeFormatter();
-  rdf.useNamedDateTimeStyle();
-
-  let now = new Date();
-
   let rows = config.widgetFamily === "large" ? 15 : 4;
 
   for (
@@ -100,22 +95,14 @@ async function createWidget(stops) {
     }
 
     departureStack.addSpacer();
-    let departureDiff = Math.floor((itemDate - now) / 1000 / 60);
-    log(departureDiff);
-    if (config.widgetFamily !== "small") {
-      let timeElement = departureStack.addText(`${rdf.string(itemDate, now)}`);
-      timeElement.font = Font.systemFont(13);
-      timeElement.textColor = Color.white();
-    } else {
-      let timeElement = departureStack.addText(`${departureDiff}m`);
-      timeElement.font = Font.systemFont(13);
-      timeElement.textColor = Color.white();
-    }
+    let timeElement = departureStack.addText(`${df.string(itemDate)}`);
+    timeElement.font = Font.systemFont(13);
+    timeElement.textColor = Color.white();
   }
 
   widget.addSpacer(20);
 
-  // UI presented in Siri ans Shortcuta is non-interactive, so we only show the footer when not running the script from Siri.
+  // UI presented in Siri and Shortcuts is non-interactive, so we only show the footer when not running the script from Siri.
   if (!config.runsWithSiri) {
     widget.addSpacer(8);
     // Add button to open documentation
@@ -124,7 +111,7 @@ async function createWidget(stops) {
     let linkStack = footerStack.addStack();
     linkStack.centerAlignContent();
     linkStack.url = linkUrl;
-    let linkElement = linkStack.addText("Read more");
+    let linkElement = linkStack.addText("See all departures");
     linkElement.font = Font.systemFont(13);
     linkElement.textColor = Color.white();
     linkStack.addSpacer(3);
