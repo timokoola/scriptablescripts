@@ -1,7 +1,8 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: cyan; icon-glyph: bus;
-let defaultStop = "HSL:1020601";
+
+let defaultStop = "HSL:2321222";
 let argsStop = args.widgetParameter;
 let userStop =
   argsStop && typeof argsStop == "string" && argsStop.startsWith("HSL:")
@@ -47,7 +48,7 @@ async function createWidget(stops) {
   // Add background gradient
   let gradient = new LinearGradient();
   gradient.locations = [0, 1];
-  gradient.colors = [new Color("224488"), new Color("020211")];
+  gradient.colors = [new Color("489FB5"), new Color("16697A")];
   widget.backgroundGradient = gradient;
   // Show title
   let titleStack = widget.addStack();
@@ -77,16 +78,18 @@ async function createWidget(stops) {
 
     let shortName = `${item.trip.routeShortName}`;
     let routeElement = departureStack.addText(shortName.padEnd(6, " "));
-    routeElement.font = Font.systemFont(13);
+    routeElement.font = new Font("Menlo", 13);
     routeElement.textColor = Color.white();
 
+    let spacer = 2;
+
     if (config.widgetFamily !== "small") {
-      departureStack.addSpacer(3);
+      departureStack.addSpacer(spacer);
       let headSignElement = departureStack.addText(`${item.trip.tripHeadsign}`);
       headSignElement.font = Font.systemFont(13);
       headSignElement.textColor = Color.white();
     } else {
-      departureStack.addSpacer(3);
+      departureStack.addSpacer(spacer);
       let headSignElement = departureStack.addText(
         `${item.trip.tripHeadsign.substring(0, 5)}`
       );
@@ -96,7 +99,7 @@ async function createWidget(stops) {
 
     departureStack.addSpacer();
     let timeElement = departureStack.addText(`${df.string(itemDate)}`);
-    timeElement.font = Font.systemFont(13);
+    timeElement.font = new Font("Menlo", 13);
     timeElement.textColor = Color.white();
   }
 
@@ -112,7 +115,7 @@ async function createWidget(stops) {
     linkStack.centerAlignContent();
     linkStack.url = linkUrl;
     let linkElement = linkStack.addText("See all departures");
-    linkElement.font = Font.systemFont(13);
+    linkElement.font = new Font("Menlo", 13);
     linkElement.textColor = Color.white();
     linkStack.addSpacer(3);
     let linkSymbolElement = linkStack.addImage(linkSymbol.image);
